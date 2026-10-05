@@ -1,0 +1,1684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SkillSwap — Learn from Learners. Teach What You Know.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#171f2a; --paper:#f7f5ee; --card:#ffffff; --line:#e5decb;
+  --coral:#ff5733; --coral-dark:#d83b18; --sage:#7ca378; --amber:#f4b23b;
+  --indigo:#4a6cf7; --emerald:#22c55e; --purple:#8b5cf6;
+  --muted:#667085; --radius:20px; --radius-sm:12px;
+  --font-display:'Fraunces',Georgia,serif; --font-body:'Sora',system-ui,-apple-system,sans-serif;
+  --shadow-sm:0 2px 8px rgba(23,31,42,0.06);
+  --shadow-md:0 12px 30px -10px rgba(23,31,42,0.12);
+  --shadow-lg:0 20px 48px -14px rgba(23,31,42,0.18);
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+:root[data-theme="dark"]{
+  --ink:#f2efe9; --paper:#12161d; --card:#1a212b; --line:#2c3746; --muted:#94a3b8;
+  --shadow-sm:0 2px 8px rgba(0,0,0,0.3);
+  --shadow-md:0 12px 30px -10px rgba(0,0,0,0.4);
+  --shadow-lg:0 20px 48px -14px rgba(0,0,0,0.6);
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-padding-top:env(safe-area-inset-top,0px); scroll-behavior:smooth;}
+html,body{min-height:100%;}
+body{
+  font-family:var(--font-body); background:var(--paper); color:var(--ink);
+  line-height:1.58; -webkit-font-smoothing:antialiased;
+  transition:background .3s ease, color .3s ease;
+}
+h1,h2,h3,h4{font-family:var(--font-display); font-weight:700; letter-spacing:-0.02em;}
+::selection{background:var(--coral); color:#fff;}
+#app{transition:opacity .22s ease; opacity:1;}
+a{color:inherit; text-decoration:none;}
+button{font-family:inherit; cursor:pointer; border:none; outline:none;}
+.wrap{max-width:1120px; margin:0 auto; padding:0 22px;}
+.hide{display:none !important;}
+
+/* NAV */
+nav{
+  position:sticky; top:0; top:env(safe-area-inset-top,0px); z-index:90;
+  background:rgba(247,245,238,0.92); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line); transition:background .3s ease, border-color .3s ease;
+}
+:root[data-theme="dark"] nav{background:rgba(18,22,29,0.92);}
+.navrow{display:flex; align-items:center; justify-content:space-between; padding:12px 22px; max-width:1120px; margin:0 auto; gap:16px;}
+.logo{display:flex; align-items:center; gap:9px; font-family:var(--font-display); font-weight:800; font-size:22px; cursor:pointer; user-select:none;}
+.logo svg{width:28px; height:28px;}
+.navlinks{display:flex; gap:22px; font-size:14.5px; font-weight:500; color:var(--muted); align-items:center;}
+.navlinks a{display:inline-flex; align-items:center; gap:6px; cursor:pointer; transition:color .18s; position:relative; padding:6px 2px;}
+.navlinks a:hover, .navlinks a.active{color:var(--ink); font-weight:600;}
+.nav-badge{
+  background:var(--coral); color:#fff; font-size:11px; font-weight:700;
+  padding:2px 7px; border-radius:100px; line-height:1; min-width:18px; text-align:center;
+  animation:pulseBadge 2.2s infinite;
+}
+@keyframes pulseBadge{0%,100%{transform:scale(1);} 50%{transform:scale(1.12);}}
+.nav-actions{display:flex; align-items:center; gap:8px;}
+
+/* BUTTONS */
+.btn{padding:10px 22px; border-radius:100px; font-size:14.5px; font-weight:600; display:inline-flex; align-items:center; justify-content:center; gap:7px; transition:transform .18s ease, box-shadow .18s ease, background .18s ease; text-align:center;}
+.btn:active{transform:scale(0.97);}
+.btn-primary{background:var(--coral); color:#fff; box-shadow:0 8px 20px -6px rgba(255,87,51,0.55);}
+.btn-primary:hover{background:var(--coral-dark); transform:translateY(-2px); box-shadow:0 12px 26px -6px rgba(255,87,51,0.65);}
+.btn-outline{background:transparent; border:1.5px solid var(--ink); color:var(--ink);}
+.btn-outline:hover{background:var(--ink); color:#fff; transform:translateY(-1px);}
+.btn-ghost{background:var(--card); border:1px solid var(--line); color:var(--ink);}
+.btn-ghost:hover{border-color:var(--coral); color:var(--coral);}
+.btn-sm{padding:6px 14px; font-size:13px;}
+.btn-back{background:none; border:none; color:var(--muted); font-size:14px; font-weight:600; padding:4px 0; display:inline-flex; align-items:center; gap:5px; transition:color .15s ease; cursor:pointer;}
+.btn-back:hover{color:var(--coral-dark);}
+
+/* BOTTOM NAV (MOBILE) */
+.bottomnav{display:none;}
+@media(max-width:820px){
+  .navlinks{display:none;}
+  .nav-primary-btn{display:none;}
+  .bottomnav{
+    display:flex; position:fixed; bottom:0; left:0; right:0;
+    background:rgba(255,255,255,0.96); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+    border-top:1px solid var(--line); padding:7px 8px calc(7px + env(safe-area-inset-bottom,0px));
+    justify-content:space-around; z-index:90; box-shadow:0 -4px 18px rgba(0,0,0,0.06);
+  }
+  :root[data-theme="dark"] .bottomnav{background:rgba(26,33,43,0.96);}
+  .bottomnav a{
+    font-size:11px; font-weight:600; color:var(--muted); display:flex; flex-direction:column;
+    align-items:center; gap:3px; position:relative; padding:4px 10px; cursor:pointer;
+  }
+  .bottomnav a.active{color:var(--coral);}
+  .bottomnav .mob-badge{
+    position:absolute; top:2px; right:10px; background:var(--coral); color:#fff;
+    font-size:10px; padding:1px 5px; border-radius:100px; font-weight:800;
+  }
+  body{padding-bottom:72px;}
+}
+
+/* LIVE TICKER */
+.ticker-bar{
+  background:linear-gradient(90deg, #ff5733 0%, #ff8c42 50%, #f4b23b 100%);
+  color:#fff; padding:7px 16px; font-size:12.5px; font-weight:600; overflow:hidden;
+  white-space:nowrap; position:relative; display:flex; align-items:center; justify-content:center;
+}
+.ticker-content{display:inline-flex; align-items:center; gap:28px; animation:marquee 32s linear infinite;}
+.ticker-item{display:inline-flex; align-items:center; gap:7px;}
+.ticker-dot{width:7px; height:7px; background:#fff; border-radius:50%; box-shadow:0 0 8px rgba(255,255,255,0.9); animation:pulse 1.4s infinite;}
+@keyframes marquee{0%{transform:translateX(0);} 100%{transform:translateX(-50%);}}
+@keyframes pulse{0%,100%{opacity:1;} 50%{opacity:0.35;}}
+
+/* HERO */
+.hero{padding:54px 0 34px; text-align:center; position:relative; overflow:hidden;}
+.hero::before{
+  content:''; position:absolute; top:-140px; left:50%; transform:translateX(-50%);
+  width:980px; height:540px;
+  background:radial-gradient(circle at 35% 30%, rgba(255,87,51,0.18), transparent 60%),
+             radial-gradient(circle at 68% 65%, rgba(124,163,120,0.2), transparent 55%),
+             radial-gradient(circle at 50% 90%, rgba(244,178,59,0.15), transparent 50%);
+  filter:blur(18px); z-index:-1; pointer-events:none;
+}
+.hero-tagline{
+  display:inline-flex; align-items:center; gap:8px; background:rgba(255,87,51,0.1);
+  color:var(--coral-dark); border:1px solid rgba(255,87,51,0.25);
+  border-radius:100px; padding:6px 16px; font-size:13px; font-weight:700; margin-bottom:18px;
+}
+:root[data-theme="dark"] .hero-tagline{background:rgba(255,87,51,0.18); color:#ff8469;}
+.hero h1{font-size:clamp(40px,7.5vw,74px); line-height:1.02; letter-spacing:-0.025em; max-width:920px; margin:0 auto;}
+.hero h1 span.gradient-text{
+  background:linear-gradient(120deg, var(--coral), #f4b23b);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+.hero p.subhead{
+  font-size:clamp(17px,2.4vw,21px); color:var(--muted); max-width:640px; margin:16px auto 0;
+  font-weight:400; line-height:1.5;
+}
+
+/* INSTINCT OMNI SEARCH */
+.omni-search-wrap{
+  max-width:760px; margin:34px auto 16px; background:var(--card);
+  border:2px solid var(--line); border-radius:100px; padding:8px 10px 8px 24px;
+  display:flex; align-items:center; gap:12px; box-shadow:var(--shadow-lg);
+  position:relative; transition:border-color .2s, box-shadow .2s;
+}
+.omni-search-wrap:focus-within{border-color:var(--coral); box-shadow:0 14px 40px -10px rgba(255,87,51,0.25);}
+.omni-icon{font-size:22px; color:var(--coral); flex-shrink:0;}
+.omni-input{
+  flex:1; border:none; background:transparent; font-size:16px; font-family:inherit;
+  color:var(--ink); outline:none;
+}
+.omni-input::placeholder{color:var(--muted); opacity:0.8;}
+.omni-btn{padding:12px 24px; border-radius:100px; font-size:15px; font-weight:700;}
+.instinct-pills{display:flex; gap:8px; justify-content:center; flex-wrap:wrap; max-width:820px; margin:10px auto 30px;}
+.instinct-pill{
+  background:var(--card); border:1px solid var(--line); border-radius:100px;
+  padding:5px 13px; font-size:12.5px; font-weight:600; color:var(--muted); cursor:pointer;
+  transition:all .18s ease; display:inline-flex; align-items:center; gap:5px;
+}
+.instinct-pill:hover{border-color:var(--coral); color:var(--coral); transform:translateY(-1px);}
+
+/* SWAP VISUAL WITH FOUNDER PROFILE */
+.swap-spotlight{margin:36px auto 20px; max-width:880px;}
+.swapviz-box{
+  background:var(--card); border:1.5px solid var(--line); border-radius:24px; padding:26px 30px;
+  box-shadow:var(--shadow-md); position:relative; overflow:hidden;
+}
+.swapviz-box::before{
+  content:''; position:absolute; top:0; left:0; right:0; height:4px;
+  background:linear-gradient(90deg, var(--coral), var(--amber), var(--sage));
+}
+.swapviz-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; flex-wrap:wrap; gap:10px;}
+.swapviz-label{font-size:13px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.04em;}
+.swapviz-pulse{display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:700; color:var(--emerald); background:rgba(34,197,94,0.12); padding:4px 12px; border-radius:100px;}
+.swapviz-grid{display:grid; grid-template-columns:1fr auto 1fr; gap:18px; align-items:center;}
+@media(max-width:760px){
+  .swapviz-grid{grid-template-columns:1fr; gap:14px;}
+  .swapviz-divider{transform:rotate(90deg); margin:6px 0;}
+}
+.swap-profile-card{
+  background:var(--paper); border:1.5px solid var(--line); border-radius:18px; padding:18px 20px;
+  text-align:left; transition:transform .2s ease, border-color .2s; position:relative;
+}
+.swap-profile-card:hover{border-color:var(--coral); transform:translateY(-2px);}
+.swap-profile-card.founder-card{
+  background:linear-gradient(145deg, var(--card) 0%, rgba(255,87,51,0.04) 100%);
+  border-color:#ffd7c9;
+}
+:root[data-theme="dark"] .swap-profile-card.founder-card{border-color:#4a2c24;}
+.spc-top{display:flex; gap:14px; align-items:center; margin-bottom:12px;}
+.spc-info b{font-size:16px; font-weight:700; color:var(--ink); display:block; line-height:1.2;}
+.spc-info span{font-size:12.5px; color:var(--muted);}
+.spc-founder-badge{
+  display:inline-flex; align-items:center; gap:4px; background:linear-gradient(135deg, #ff5733, #f4b23b);
+  color:#fff; font-size:10.5px; font-weight:800; padding:2px 8px; border-radius:100px;
+  text-transform:uppercase; letter-spacing:0.04em; margin-bottom:4px;
+}
+.spc-chips{margin-top:10px; font-size:12px;}
+.spc-chips-row{margin-top:4px; display:flex; flex-wrap:wrap; gap:4px;}
+.swapviz-divider{
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:6px; color:var(--coral); font-weight:800; user-select:none;
+}
+.swap-arrow-icon{
+  width:46px; height:46px; border-radius:50%; background:rgba(255,87,51,0.12);
+  display:flex; align-items:center; justify-content:center; font-size:20px;
+  animation:arrowPulse 2.4s ease-in-out infinite;
+}
+@keyframes arrowPulse{0%,100%{transform:scale(1);} 50%{transform:scale(1.15); box-shadow:0 0 16px rgba(255,87,51,0.3);}}
+
+/* STATS */
+.stat-row{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin:40px auto 20px;}
+@media(max-width:820px){.stat-row{grid-template-columns:repeat(2,1fr);}}
+.stat-box{
+  background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+  padding:22px 18px; text-align:center; box-shadow:var(--shadow-sm); transition:transform .2s;
+}
+.stat-box:hover{transform:translateY(-3px); box-shadow:var(--shadow-md);}
+.stat-num{font-family:var(--font-display); font-size:36px; font-weight:800; color:var(--coral-dark); line-height:1;}
+.stat-label{color:var(--muted); font-size:13.5px; margin-top:6px; font-weight:500;}
+
+/* SECTIONS */
+.section{padding:56px 0;}
+.sec-head{text-align:center; max-width:680px; margin:0 auto 36px;}
+.sec-head h2{font-size:clamp(26px,4vw,36px); line-height:1.15;}
+.sec-head p{color:var(--muted); font-size:16px; margin-top:8px;}
+
+/* CARDS & GRIDS */
+.grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:22px;}
+.grid4{display:grid; grid-template-columns:repeat(4,1fr); gap:18px;}
+@media(max-width:860px){.grid3{grid-template-columns:1fr;} .grid4{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:540px){.grid4{grid-template-columns:1fr;}}
+
+.feat-card{
+  background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+  padding:28px 24px; transition:transform .22s ease, box-shadow .22s ease, border-color .22s;
+  box-shadow:var(--shadow-sm); display:flex; flex-direction:column;
+}
+.feat-card:hover{transform:translateY(-5px); box-shadow:var(--shadow-md); border-color:var(--coral);}
+.feat-icon{font-size:36px; margin-bottom:14px; line-height:1;}
+.feat-card h3{font-size:20px; margin-bottom:8px;}
+.feat-card p{color:var(--muted); font-size:14.5px; line-height:1.55;}
+
+/* COMPARISON TABLE */
+.comparison-wrap{
+  background:var(--card); border:1px solid var(--line); border-radius:22px;
+  overflow:hidden; box-shadow:var(--shadow-md); margin-top:20px;
+}
+.comp-table{width:100%; border-collapse:collapse; text-align:left; font-size:14.5px;}
+.comp-table th, .comp-table td{padding:16px 20px; border-bottom:1px solid var(--line);}
+.comp-table th{background:rgba(0,0,0,0.02); font-weight:700; color:var(--ink); font-size:14px;}
+.comp-table th.highlight, .comp-table td.highlight{background:rgba(255,87,51,0.05); font-weight:600;}
+:root[data-theme="dark"] .comp-table th.highlight, :root[data-theme="dark"] .comp-table td.highlight{background:rgba(255,87,51,0.1);}
+.comp-check{color:var(--emerald); font-weight:800; font-size:17px;}
+.comp-cross{color:#dc2626; font-weight:800; font-size:17px;}
+
+/* CHIPS */
+.chip{display:inline-flex; align-items:center; gap:5px; background:#fdece6; color:var(--coral-dark); border:1px solid #ffd7c9; border-radius:100px; padding:5px 13px; font-size:13px; font-weight:600; margin:3px 5px 3px 0;}
+.chip.learn{background:#edf4eb; color:#366332; border-color:#cde0cb;}
+:root[data-theme="dark"] .chip{background:rgba(255,87,51,0.18); border-color:#5c2d20; color:#ff9880;}
+:root[data-theme="dark"] .chip.learn{background:rgba(124,163,120,0.18); border-color:#2a4427; color:#95c590;}
+.chip.select{cursor:pointer; user-select:none; transition:all .15s;}
+.chip.selected{background:var(--coral); color:#fff; border-color:var(--coral);}
+
+/* MATCH CARD */
+.matchcard{
+  background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+  padding:22px; margin-bottom:16px; transition:transform .2s ease, box-shadow .2s ease, border-color .2s;
+  box-shadow:var(--shadow-sm);
+}
+.matchcard:hover{transform:translateY(-3px); box-shadow:var(--shadow-md); border-color:#f0cfc3;}
+.mc-top{display:flex; gap:14px; align-items:flex-start;}
+.av{border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700;}
+.mc-name{font-size:18px; font-weight:700;}
+.mc-sub{color:var(--muted); font-size:13.5px; margin-top:2px;}
+.mc-pct{margin-left:auto; text-align:right; position:relative;}
+.ring-wrap{position:relative; width:64px; height:64px;}
+.ring-num{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14.5px; color:var(--ink);}
+.pct-label{font-size:11.5px; color:var(--muted); font-weight:600; margin-top:2px;}
+.mc-body{margin-top:14px;}
+.mc-body .lbl{font-size:12px; color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:0.04em; margin:10px 0 4px;}
+.mc-why{background:#fbf8ef; border-left:3px solid var(--amber); padding:10px 14px; border-radius:8px; margin-top:12px; font-size:13.5px; color:#5a5044; line-height:1.5;}
+:root[data-theme="dark"] .mc-why{background:#232b36; color:#d2c7b5; border-color:var(--amber);}
+.mc-actions{display:flex; gap:10px; margin-top:16px;}
+
+/* ONBOARDING */
+.onboard{max-width:640px; margin:40px auto; background:var(--card); border:1px solid var(--line); border-radius:24px; padding:36px; box-shadow:var(--shadow-md);}
+.progress{display:flex; gap:6px; margin-bottom:28px;}
+.progress div{flex:1; height:5px; border-radius:3px; background:var(--line);}
+.progress div.done{background:var(--coral);}
+.field{margin-bottom:16px;}
+.field label{display:block; font-size:13.5px; font-weight:600; color:var(--muted); margin-bottom:6px;}
+.field input, .field textarea, .field select{
+  width:100%; padding:12px 14px; border:1.5px solid var(--line); border-radius:12px;
+  font-size:15px; font-family:inherit; background:var(--paper); color:var(--ink);
+  transition:border-color .18s;
+}
+.field input:focus, .field textarea:focus, .field select:focus{border-color:var(--coral); outline:none;}
+.field textarea{resize:vertical; min-height:80px;}
+.skillgrid{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;}
+.onboard-nav{display:flex; justify-content:space-between; margin-top:26px;}
+.levelrow{display:flex; align-items:center; justify-content:space-between; padding:11px 0; border-bottom:1px solid var(--line);}
+.levelrow select{width:140px;}
+
+/* FAQ ACCORDION */
+.faq-box{background:var(--card); border:1px solid var(--line); border-radius:16px; margin-bottom:12px; overflow:hidden;}
+.faq-q{padding:18px 22px; font-weight:700; font-size:16px; cursor:pointer; display:flex; justify-content:space-between; align-items:center;}
+.faq-a{padding:0 22px 18px; color:var(--muted); font-size:14.5px; line-height:1.6; display:none;}
+.faq-box.open .faq-a{display:block;}
+.faq-box.open .faq-toggle{transform:rotate(180deg);}
+.faq-toggle{transition:transform .2s;}
+
+/* FREE STORAGE BANNER */
+.storage-tip-box{
+  background:linear-gradient(135deg, rgba(74,108,247,0.08), rgba(34,197,94,0.08));
+  border:1.5px solid rgba(74,108,247,0.25); border-radius:16px; padding:18px 20px;
+  margin:20px 0; font-size:14px; line-height:1.55;
+}
+.storage-tip-box b{color:var(--indigo);}
+
+/* MODAL */
+.overlay{position:fixed; inset:0; background:rgba(23,31,42,0.6); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; z-index:110; padding:20px;}
+.modal{background:var(--card); border-radius:24px; padding:30px; max-width:480px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:var(--shadow-lg); border:1px solid var(--line);}
+.modal h2{font-size:22px; margin-bottom:16px;}
+.modal-row{display:flex; justify-content:space-between; font-size:14.5px; padding:9px 0; border-bottom:1px solid var(--line);}
+.modal textarea{width:100%; margin-top:14px; padding:14px; border:1.5px solid var(--line); border-radius:12px; min-height:100px; font-family:inherit; font-size:14.5px; background:var(--paper); color:var(--ink);}
+.modal-actions{display:flex; gap:10px; margin-top:20px;}
+.toast{position:fixed; bottom:26px; left:50%; transform:translateX(-50%); background:var(--ink); color:#fff; padding:13px 26px; border-radius:100px; font-size:14.5px; font-weight:600; z-index:220; box-shadow:0 10px 30px rgba(0,0,0,0.3); animation:slideUp .25s ease-out;}
+@keyframes slideUp{from{transform:translate(-50%,20px); opacity:0;} to{transform:translate(-50%,0); opacity:1;}}
+
+/* MESSAGES */
+.msgwrap{display:grid; grid-template-columns:290px 1fr; border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; margin:24px 0 50px; min-height:500px; background:var(--card); box-shadow:var(--shadow-md);}
+@media(max-width:760px){.msgwrap{grid-template-columns:1fr;}}
+.convlist{border-right:1px solid var(--line); overflow-y:auto; max-height:560px;}
+.convitem{padding:14px 16px; display:flex; gap:12px; align-items:center; cursor:pointer; border-bottom:1px solid var(--line); transition:background .15s;}
+.convitem:hover, .convitem.active{background:rgba(255,87,51,0.06);}
+.convitem .cname{font-weight:600; font-size:14.5px;}
+.convitem .clast{font-size:12.5px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:170px;}
+.chatpane{display:flex; flex-direction:column; height:560px;}
+.chathead{padding:14px 18px; border-bottom:1px solid var(--line); font-weight:700; display:flex; align-items:center; gap:12px; background:rgba(0,0,0,0.01);}
+.chatbody{flex:1; padding:18px; overflow-y:auto; display:flex; flex-direction:column; gap:10px;}
+.bubble{max-width:72%; padding:10px 16px; border-radius:18px; font-size:14.5px; line-height:1.45; animation:bubbleIn .22s ease-out;}
+@keyframes bubbleIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+.bubble.them{background:var(--paper); align-self:flex-start; border:1px solid var(--line);}
+.bubble.me{background:var(--coral); color:#fff; align-self:flex-end;}
+.chatinput{display:flex; gap:10px; padding:14px; border-top:1px solid var(--line); background:var(--card);}
+.chatinput input{flex:1; padding:12px 18px; border-radius:100px; border:1.5px solid var(--line); font-size:14.5px; background:var(--paper); color:var(--ink);}
+
+/* FOOTER */
+footer{
+  border-top:1px solid var(--line); background:var(--card); padding:48px 0 32px;
+  color:var(--muted); font-size:13.5px; margin-top:60px;
+}
+.footer-row{display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:24px; max-width:1120px; margin:0 auto; padding:0 22px 30px;}
+.footer-links{display:flex; gap:22px; flex-wrap:wrap;}
+.footer-bottom{max-width:1120px; margin:0 auto; padding:20px 22px 0; border-top:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; font-size:13px;}
+</style>
+</head>
+<body>
+
+<!-- REAL-TIME COMMUNITY MARQUEE -->
+<div class="ticker-bar">
+  <div class="ticker-content" id="ticker-content">
+    <span class="ticker-item"><span class="ticker-dot"></span> <b>LIVE CAMPUS SWAPS</b></span>
+    <span class="ticker-item">⚡ Mayank Choubey (Founder) is teaching Full-Stack & UI/UX</span>
+    <span class="ticker-item">🤝 100% Free peer-to-peer knowledge exchange</span>
+    <span class="ticker-item">🎓 Students active across 24+ universities</span>
+    <span class="ticker-item">💡 No money exchanged — exchange knowledge directly</span>
+    <span class="ticker-item"><span class="ticker-dot"></span> <b>LIVE CAMPUS SWAPS</b></span>
+    <span class="ticker-item">⚡ Mayank Choubey (Founder) is teaching Full-Stack & UI/UX</span>
+    <span class="ticker-item">🤝 100% Free peer-to-peer knowledge exchange</span>
+  </div>
+</div>
+
+<nav>
+  <div class="navrow">
+    <div class="logo" onclick="go('landing')">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M3 8h13M16 8l-3-3M16 8l-3 3" stroke="#ff5733" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 16H8M8 16l3-3M8 16l3 3" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      SkillSwap
+    </div>
+    <div class="navlinks">
+      <a onclick="go('landing')" id="nav-landing">Home</a>
+      <a onclick="go('explore')" id="nav-explore">Explore Skills</a>
+      <a onclick="go('matches')" id="nav-matches">My Matches</a>
+      <a onclick="go('requests')" id="nav-requests">
+        Requests <span class="nav-badge hide" id="nav-reqs-badge">0</span>
+      </a>
+      <a onclick="go('messages')" id="nav-messages">
+        Messages <span class="nav-badge hide" id="nav-msgs-badge">0</span>
+      </a>
+      <a onclick="go('settings')" id="nav-settings">My Profile</a>
+    </div>
+    <div class="nav-actions">
+      <button class="btn btn-outline" id="theme-toggle" onclick="toggleTheme()" style="padding:9px 13px" title="Toggle Theme">🌙</button>
+      <button class="btn btn-primary nav-primary-btn" onclick="go(myProfile?'matches':'onboard')">Find Matches</button>
+      <button class="btn btn-ghost" id="nav-auth-btn" onclick="handleAuthNavClick()">Log In</button>
+    </div>
+  </div>
+</nav>
+
+<div id="app"></div>
+
+<!-- MOBILE BOTTOM BAR -->
+<div class="bottomnav">
+  <a onclick="go('landing')" id="mob-landing">🏠<span>Home</span></a>
+  <a onclick="go('explore')" id="mob-explore">🔍<span>Explore</span></a>
+  <a onclick="go('matches')" id="mob-matches">🔥<span>Matches</span></a>
+  <a onclick="go('requests')" id="mob-requests">🤝<span>Reqs</span><span class="mob-badge hide" id="mob-reqs-badge">0</span></a>
+  <a onclick="go('messages')" id="mob-messages">💬<span>Msgs</span><span class="mob-badge hide" id="mob-msgs-badge">0</span></a>
+  <a onclick="go('settings')" id="mob-settings">👤<span>Profile</span></a>
+</div>
+
+<footer>
+  <div class="footer-row">
+    <div>
+      <div class="logo" style="margin-bottom:8px">
+        <svg viewBox="0 0 24 24" fill="none" style="width:24px;height:24px"><path d="M3 8h13M16 8l-3-3M16 8l-3 3" stroke="#ff5733" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 16H8M8 16l3-3M8 16l3 3" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        SkillSwap
+      </div>
+      <p style="max-width:320px;font-size:13.5px;line-height:1.5">Exchange knowledge, not money. Connect with peers from your college and learn what you've always wanted.</p>
+      <p style="margin-top:10px;font-size:13px;color:var(--coral-dark);font-weight:700">Created with ❤️ by Mayank Choubey</p>
+    </div>
+    <div class="footer-links">
+      <div>
+        <b style="color:var(--ink);display:block;margin-bottom:10px;font-size:14px">Platform</b>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <a onclick="go('explore')">Explore Skills</a>
+          <a onclick="go('matches')">Find Matches</a>
+          <a onclick="go('onboard')">Sign Up Free</a>
+        </div>
+      </div>
+      <div>
+        <b style="color:var(--ink);display:block;margin-bottom:10px;font-size:14px">Community</b>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <a onclick="state.explCat='💻 Programming';go('explore')">Programming</a>
+          <a onclick="state.explCat='🎨 Design';go('explore')">UI/UX Design</a>
+          <a onclick="state.explCat='💼 Career';go('explore')">Career Prep</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div>© 2026 SkillSwap · 100% Free Peer Learning Platform</div>
+    <div>Live Supabase Database Connected 🟢</div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+const SUPABASE_URL = "https://oisyrycvxwioswrgbndf.supabase.co";
+const SUPABASE_KEY = "sb_publishable_SkwEp-whIzWYIvcc8Id8kw_sgb4NEbC";
+const supa = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const COLORS = ['#ff5733','#7ca378','#f4b23b','#4a6cf7','#8b5cf6','#ec4899'];
+function initials(n){return (n||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();}
+function cap(s){return s? s[0].toUpperCase()+s.slice(1):s;}
+function avatar(name,size,url){
+  size=size||52;
+  if(url) return `<img src="${url}" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover;display:inline-block;flex-shrink:0;border:2px solid var(--line)" alt="${name}">`;
+  return `<div class="av" style="background:${COLORS[(name||'?').length%COLORS.length]};width:${size}px;height:${size}px;font-size:${size/2.5}px;border:2px solid var(--line)">${initials(name)}</div>`;
+}
+function pctColor(pct){ if(pct>=80) return '#22c55e'; if(pct>=50) return '#f59e0b'; return '#ea580c'; }
+function ringHTML(pct){
+  const r=26, c=2*Math.PI*r, off=c-(pct/100)*c, color=pctColor(pct);
+  return `<svg width="64" height="64" viewBox="0 0 64 64" style="transform:rotate(-90deg)"><circle cx="32" cy="32" r="${r}" fill="none" stroke="var(--line)" stroke-width="6"/><circle cx="32" cy="32" r="${r}" fill="none" stroke="${color}" stroke-width="6" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${off}" style="transition:stroke-dashoffset 1s ease"/></svg>`;
+}
+function confettiHTML(){ return `<div class="confetti-dots">${['🎉','✨','🎊','⭐'].map((e,i)=>`<span class="confetti-dot" style="--dx:${(i-1.5)*18}px; left:${44+(i-1.5)*10}%; animation-delay:${i*0.08}s">${e}</span>`).join('')}</div>`; }
+function toggleTheme(){
+  const html=document.documentElement; const dark=html.getAttribute('data-theme')==='dark';
+  const next=dark?'light':'dark'; html.setAttribute('data-theme', next);
+  document.getElementById('theme-toggle').textContent = dark?'🌙':'☀️';
+  try{ localStorage.setItem('ss-theme', next); }catch(e){}
+}
+function restoreTheme(){
+  let saved=null; try{ saved=localStorage.getItem('ss-theme'); }catch(e){}
+  if(saved==='dark'){ document.documentElement.setAttribute('data-theme','dark'); const b=document.getElementById('theme-toggle'); if(b) b.textContent='☀️'; }
+}
+function skeletonCards(n){ let out=''; for(let i=0;i<n;i++) out+=`<div class="matchcard skeleton"><div class="mc-top"><div class="skel-avatar"></div><div style="flex:1"><div class="skel-line" style="width:45%"></div><div class="skel-line" style="width:65%;margin-top:8px"></div></div></div></div>`; return out; }
+function chip(s, cls){return `<span class="chip ${cls||''}">${s}</span>`;}
+function starsHTML(n,size){ n=Math.round(n); let s=''; for(let i=1;i<=5;i++) s+= i<=n?'★':'☆'; return `<span style="color:var(--amber);font-size:${size||16}px;letter-spacing:1px">${s}</span>`; }
+
+const CATS = {
+  "💻 Programming":["C++","C","Python","Java","JavaScript","Web Development","React","Git"],
+  "🎨 Design":["UI/UX Design","Photoshop","Figma","Graphic Design"],
+  "🎬 Media":["Video Editing","Photography","Content Creation"],
+  "📚 Academics":["Mathematics","Physics","Chemistry","English"],
+  "🎤 Communication":["Public Speaking","Communication"],
+  "💼 Career":["Excel","Resume Building","Interview Preparation"],
+  "🎵 Music":["Guitar","Music"],
+  "🏃 Fitness":["Fitness","Cooking"]
+};
+
+// ---------- CLIENT-SIDE IMAGE COMPRESSOR (KEEPS STORAGE 100% FREE!) ----------
+// Compresses any 5MB camera image down to ~15KB WebP before upload,
+// enabling 40,000+ user avatars to fit inside Supabase's free 1GB limit!
+async function compressAvatar(file, maxWidth=240, maxHeight=240, quality=0.82){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onload = (e)=>{
+      const img = new Image();
+      img.onload = ()=>{
+        const canvas = document.createElement('canvas');
+        let w = img.width, h = img.height;
+        if(w > h){ if(w > maxWidth){ h = Math.round((h*maxWidth)/w); w = maxWidth; } }
+        else { if(h > maxHeight){ w = Math.round((w*maxHeight)/h); h = maxHeight; } }
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        canvas.toBlob((blob)=>resolve(blob), 'image/webp', quality);
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+// ---------- STATE & CACHE ----------
+let session=null, myProfile=null, founderProfile=null;
+let skillsCache=[], studentsCache=null, connectionsCache=[];
+let connectTarget=null, draftStars=5;
+let pendingRequestsCount=0, unreadMessagesCount=0;
+let state = {
+  view:'landing', arg:null, explCat:null, matchFilter:'pct', omniQuery:'',
+  onboard:{step:0, authMode:'signup', name:'',college:'',course:'',year:'1st Year',bio:'',teach:[],learn:[],levels:{}}
+};
+
+// Fetch Creator/Founder profile dynamically from Supabase
+async function loadFounderProfile(){
+  try{
+    const { data } = await supa.from('profiles')
+      .select('id,name,college,course,bio,profile_picture,user_skills(type,level,skills(name))')
+      .ilike('name', '%Mayank%')
+      .limit(1)
+      .maybeSingle();
+
+    if(data){
+      const teach=[], learn=[];
+      (data.user_skills||[]).forEach(r=>{
+        if(r.skills){
+          if(r.type==='teach') teach.push({s:r.skills.name, l:cap(r.level)});
+          else learn.push(r.skills.name);
+        }
+      });
+      founderProfile = {
+        id: data.id,
+        name: data.name || 'Mayank Choubey',
+        college: data.college || 'Lead Creator & Full-Stack Dev',
+        course: data.course || 'Founder @ SkillSwap',
+        bio: data.bio || 'Building SkillSwap to let students trade knowledge freely without paying for expensive courses.',
+        profile_picture: data.profile_picture || null,
+        teach: teach.length ? teach : [{s:'Full-Stack Dev',l:'Advanced'},{s:'UI/UX Design',l:'Intermediate'},{s:'React',l:'Advanced'}],
+        learn: learn.length ? learn : ['AI Engineering','Public Speaking']
+      };
+      return founderProfile;
+    }
+  }catch(e){ console.warn('Founder query:', e); }
+
+  // Default fallback if database not seeded yet
+  founderProfile = {
+    id: myProfile ? myProfile.id : 'founder',
+    name: myProfile ? myProfile.name : 'Mayank Choubey',
+    college: myProfile?.college || 'Creator & Full-Stack Lead',
+    course: myProfile?.course || 'Founder @ SkillSwap',
+    bio: myProfile?.bio || 'Building SkillSwap to make peer-to-peer student learning accessible and 100% free.',
+    profile_picture: myProfile?.profile_picture || null,
+    teach: (myProfile && myProfile.teach.length) ? myProfile.teach : [{s:'Full-Stack Dev',l:'Advanced'},{s:'UI/UX Design',l:'Advanced'}],
+    learn: (myProfile && myProfile.learn.length) ? myProfile.learn : ['AI Engineering','Public Speaking']
+  };
+  return founderProfile;
+}
+
+async function initAuth(){
+  const { data:{session:s} } = await supa.auth.getSession();
+  session=s;
+  supa.auth.onAuthStateChange(async (_e,s2)=>{
+    session=s2;
+    updateAuthNav();
+    if(session) await loadMyProfile();
+    updateBadges();
+  });
+  if(session) await loadMyProfile();
+  await loadFounderProfile();
+  updateAuthNav();
+  updateBadges();
+
+  const hash = window.location.hash.replace(/^#/, '');
+  if(hash){
+    const [hView, ...rest] = hash.split('/');
+    state.view = hView || 'landing';
+    state.arg = rest.length ? decodeURIComponent(rest.join('/')) : null;
+  }
+  render();
+}
+
+function updateAuthNav(){
+  const b=document.getElementById('nav-auth-btn');
+  if(b) b.textContent = session ? 'Log Out' : 'Log In';
+}
+
+function handleAuthNavClick(){
+  if(session){
+    supa.auth.signOut().then(()=>{
+      session=null; myProfile=null;
+      updateAuthNav(); updateBadges(); go('landing');
+    });
+  } else { go('onboard'); }
+}
+
+async function loadMyProfile(){
+  if(!session) { myProfile=null; return; }
+  const { data:prof } = await supa.from('profiles').select('*').eq('id',session.user.id).maybeSingle();
+  if(!prof){ myProfile=null; return; }
+  const { data:us } = await supa.from('user_skills').select('type,level,skills(name)').eq('user_id',session.user.id);
+  const teach=[], learn=[];
+  (us||[]).forEach(r=>{
+    if(r.skills){
+      if(r.type==='teach') teach.push({s:r.skills.name,l:cap(r.level)});
+      else learn.push(r.skills.name);
+    }
+  });
+  myProfile = { id:prof.id, name:prof.name, college:prof.college||'', course:prof.course||'', bio:prof.bio||'', profile_picture:prof.profile_picture||null, teach, learn };
+  // If logged-in user is Mayank, update founderProfile in memory too!
+  if(myProfile.name.toLowerCase().includes('mayank')){ founderProfile = myProfile; }
+}
+
+async function loadSkillsCache(){
+  if(skillsCache.length) return skillsCache;
+  const { data } = await supa.from('skills').select('id,name,category').order('name');
+  skillsCache = data||[]; return skillsCache;
+}
+
+async function loadStudents(force){
+  if(studentsCache && !force) return studentsCache;
+  const { data } = await supa.from('profiles').select('id,name,college,course,bio,profile_picture,user_skills(type,level,skills(name))');
+  studentsCache = (data||[]).map(p=>{
+    const teach=[], learn=[];
+    (p.user_skills||[]).forEach(r=>{
+      if(r.skills){
+        if(r.type==='teach') teach.push({s:r.skills.name,l:cap(r.level)});
+        else learn.push(r.skills.name);
+      }
+    });
+    return { id:p.id, name:p.name, college:p.college||'', course:p.course||'', bio:p.bio||'', profile_picture:p.profile_picture||null, teach, learn };
+  });
+  return studentsCache;
+}
+function otherStudents(){ return (studentsCache||[]).filter(s=>!myProfile || s.id!==myProfile.id); }
+
+// ---------- UNREAD MESSAGES & INCOMING REQUEST BADGES ----------
+async function updateBadges(){
+  if(!myProfile){
+    setBadge('nav-reqs-badge', 0); setBadge('mob-reqs-badge', 0);
+    setBadge('nav-msgs-badge', 0); setBadge('mob-msgs-badge', 0);
+    return;
+  }
+  try{
+    // 1. Incoming requests
+    const { count:reqCount } = await supa.from('connections')
+      .select('*', { count:'exact', head:true })
+      .eq('receiver_id', myProfile.id)
+      .eq('status', 'pending');
+    pendingRequestsCount = reqCount || 0;
+    setBadge('nav-reqs-badge', pendingRequestsCount);
+    setBadge('mob-reqs-badge', pendingRequestsCount);
+
+    // 2. Unread messages (received messages newer than stored last-read)
+    const { data:recMsgs } = await supa.from('messages')
+      .select('id,sender_id,created_at')
+      .eq('receiver_id', myProfile.id)
+      .order('created_at', { ascending:false })
+      .limit(50);
+
+    let unread = 0;
+    const lastRead = JSON.parse(localStorage.getItem('ss_last_read_'+myProfile.id) || '{}');
+    (recMsgs||[]).forEach(m=>{
+      const lr = lastRead[m.sender_id] || 0;
+      if(new Date(m.created_at).getTime() > lr) unread++;
+    });
+    unreadMessagesCount = unread;
+    setBadge('nav-msgs-badge', unreadMessagesCount);
+    setBadge('mob-msgs-badge', unreadMessagesCount);
+  }catch(e){ console.warn('Badges error:', e); }
+}
+
+function setBadge(id, count){
+  const el = document.getElementById(id);
+  if(!el) return;
+  if(count > 0){ el.textContent = count; el.classList.remove('hide'); }
+  else { el.classList.add('hide'); }
+}
+
+function markConversationRead(otherId){
+  if(!myProfile) return;
+  const lastRead = JSON.parse(localStorage.getItem('ss_last_read_'+myProfile.id) || '{}');
+  lastRead[otherId] = Date.now();
+  localStorage.setItem('ss_last_read_'+myProfile.id, JSON.stringify(lastRead));
+  updateBadges();
+}
+
+function matchPct(me, other){
+  let matched=0; const myTeach=me.teach.map(t=>t.s), myLearn=me.learn;
+  const oTeach=other.teach.map(t=>t.s), oLearn=other.learn;
+  const total = Math.max(myLearn.length+myTeach.length,1);
+  let reasons=[];
+  myLearn.forEach(sk=>{ if(oTeach.includes(sk)){matched++; reasons.push(`You want to learn ${sk} and ${other.name.split(' ')[0]} teaches it.`);} });
+  myTeach.forEach(sk=>{ if(oLearn.includes(sk)){matched++; reasons.push(`${other.name.split(' ')[0]} wants to learn ${sk} and you teach it.`);} });
+  let pct = Math.round((matched/total)*100);
+  if(myLearn.some(sk=>oTeach.includes(sk)) && myTeach.some(sk=>oLearn.includes(sk))) pct=100;
+  return { pct, reasons };
+}
+
+async function getMatches(){
+  if(!myProfile) return [];
+  await loadStudents();
+  return otherStudents().map(d=>({d, ...matchPct(myProfile,d)})).filter(m=>m.pct>0).sort((a,b)=>b.pct-a.pct);
+}
+
+function go(view, arg, skipPush){
+  if(state.view==='messages' && view!=='messages') unsubscribeMessages();
+  state.view=view; state.arg=arg; window.scrollTo(0,0);
+  if(!skipPush) history.pushState({view,arg}, '', '#'+view+(arg?'/'+encodeURIComponent(arg):''));
+  render();
+}
+window.addEventListener('popstate', e=>{ if(e.state) go(e.state.view,e.state.arg,true); else go('landing',null,true); });
+function goBack(){ history.back(); }
+function showToast(msg){
+  const t=document.createElement('div'); t.className='toast'; t.textContent=msg;
+  document.body.appendChild(t); setTimeout(()=>t.remove(),3200);
+}
+
+// ---------- REALTIME MESSAGING ----------
+let msgChannel=null, msgThreadId=null;
+function unsubscribeMessages(){ if(msgChannel){ try{ supa.removeChannel(msgChannel); }catch(e){} msgChannel=null; msgThreadId=null; } }
+function subscribeMessages(otherId){
+  if(msgThreadId===otherId && msgChannel) return;
+  unsubscribeMessages();
+  msgThreadId=otherId;
+  msgChannel = supa.channel('chat-'+myProfile.id+'-'+otherId)
+    .on('postgres_changes', { event:'INSERT', schema:'public', table:'messages' }, payload=>{
+      const m=payload.new;
+      if(m.sender_id===myProfile.id) return;
+      if(m.sender_id===otherId && m.receiver_id===myProfile.id){
+        appendBubble(m.message, 'them');
+        markConversationRead(otherId);
+      } else if(m.receiver_id===myProfile.id){
+        updateBadges();
+        showToast('💬 New message received');
+      }
+    })
+    .subscribe();
+}
+function appendBubble(text, who){
+  const body=document.getElementById('chatbody');
+  if(!body) return;
+  const div=document.createElement('div');
+  div.className='bubble '+who;
+  div.textContent=text;
+  body.appendChild(div);
+  body.scrollTop=body.scrollHeight;
+}
+
+// Global listener for incoming connection requests
+if(supa){
+  supa.channel('global-notifications')
+    .on('postgres_changes', { event:'INSERT', schema:'public', table:'connections' }, payload=>{
+      if(myProfile && payload.new.receiver_id===myProfile.id){
+        updateBadges();
+        showToast('🎉 You received a new SkillSwap connection request!');
+      }
+    })
+    .subscribe();
+}
+
+// ---------- PAGE: LANDING ----------
+async function getStats(){
+  try{
+    const [p,s,c] = await Promise.all([
+      supa.from('profiles').select('*',{count:'exact',head:true}),
+      supa.from('skills').select('*',{count:'exact',head:true}),
+      supa.from('connections').select('*',{count:'exact',head:true}).eq('status','accepted')
+    ]);
+    return { students:Math.max(p.count||0, 18), skills:Math.max(s.count||0, 36), swaps:Math.max(c.count||0, 42) };
+  }catch(e){ return { students:18, skills:36, swaps:42 }; }
+}
+
+async function landing(){
+  const stats = await getStats();
+  if(!founderProfile) await loadFounderProfile();
+  const fp = founderProfile;
+  const leftName = myProfile ? myProfile.name : 'You (Student)';
+  const leftTeach = (myProfile && myProfile.teach[0]?.s) ? myProfile.teach[0].s : 'C++ / Python';
+  const leftLearn = (myProfile && myProfile.learn[0]) ? myProfile.learn[0] : 'UI/UX Design';
+  const leftPic = myProfile?.profile_picture || null;
+
+  const founderTeach = fp.teach[0]?.s || 'Full-Stack Dev';
+  const founderLearn = fp.learn[0] || 'AI Engineering';
+
+  return `
+  <!-- HERO SECTION -->
+  <section class="hero wrap">
+    <div class="hero-tagline">🚀 Direct Peer Learning · 100% Free · No Money Exchanged</div>
+    <h1>Trade What You Know.<br><span class="gradient-text">Learn What You Don't.</span></h1>
+    <p class="subhead">SkillSwap pairs students who have complementary skills. Teach someone Photoshop, learn C++ from them in return.</p>
+
+    <!-- OMNI INSTINCT SEARCH -->
+    <div class="omni-search-wrap">
+      <div class="omni-icon">⚡</div>
+      <input id="hero-omni" class="omni-input" placeholder="Search your instinct: e.g. 'IIT Delhi', 'React', 'Figma', 'Python', 'Mayank'..." onkeydown="if(event.key==='Enter')executeOmniSearch()">
+      <button class="btn btn-primary omni-btn" onclick="executeOmniSearch()">Search Instinct</button>
+    </div>
+    <div class="instinct-pills">
+      <span style="font-size:12px;color:var(--muted);margin-right:4px">🔥 Popular Instincts:</span>
+      <span class="instinct-pill" onclick="quickOmni('Python')">🐍 Python</span>
+      <span class="instinct-pill" onclick="quickOmni('React')">⚛️ React</span>
+      <span class="instinct-pill" onclick="quickOmni('UI/UX Design')">🎨 UI/UX</span>
+      <span class="instinct-pill" onclick="quickOmni('IIT')">🏛️ College (IIT)</span>
+      <span class="instinct-pill" onclick="quickOmni('Guitar')">🎸 Guitar</span>
+      <span class="instinct-pill" onclick="quickOmni('Web Development')">💻 Web Dev</span>
+    </div>
+
+    <!-- DYNAMIC FOUNDER SWAP SPOTLIGHT (AUTO-UPDATES LIVE FROM SUPABASE!) -->
+    <div class="swap-spotlight">
+      <div class="swapviz-box">
+        <div class="swapviz-head">
+          <div class="swapviz-label">✨ Live Swap Match preview</div>
+          <div class="swapviz-pulse">● Instant 100% Reciprocal Match</div>
+        </div>
+        <div class="swapviz-grid">
+          <!-- VISITOR / CURRENT USER CARD -->
+          <div class="swap-profile-card">
+            <div class="spc-top">
+              ${avatar(leftName, 52, leftPic)}
+              <div class="spc-info">
+                <b>${leftName}</b>
+                <span>${myProfile?.college || 'Your College / Campus'}</span>
+              </div>
+            </div>
+            <div class="spc-chips">
+              <span style="color:var(--muted);font-weight:600">Can Teach:</span>
+              <div class="spc-chips-row">${chip(leftTeach)}</div>
+              <span style="color:var(--muted);font-weight:600;margin-top:6px;display:block">Wants to Learn:</span>
+              <div class="spc-chips-row">${chip(leftLearn, 'learn')}</div>
+            </div>
+          </div>
+
+          <!-- ARROW / SWAP PULSE -->
+          <div class="swapviz-divider">
+            <div class="swap-arrow-icon">⇄</div>
+            <span style="font-size:11px;font-weight:800;color:var(--coral);letter-spacing:0.04em">SWAP</span>
+          </div>
+
+          <!-- CREATOR / FOUNDER CARD (MAYANK CHOUBEY - UPDATES DYNAMICALLY) -->
+          <div class="swap-profile-card founder-card">
+            <div class="spc-top">
+              ${avatar(fp.name, 52, fp.profile_picture)}
+              <div class="spc-info">
+                <div class="spc-founder-badge">⚡ Founder & Top Mentor</div>
+                <b>${fp.name}</b>
+                <span>${fp.college}</span>
+              </div>
+            </div>
+            <div class="spc-chips">
+              <span style="color:var(--muted);font-weight:600">Can Teach:</span>
+              <div class="spc-chips-row">${fp.teach.map(t=>chip(t.s)).join('')}</div>
+              <span style="color:var(--muted);font-weight:600;margin-top:6px;display:block">Wants to Learn:</span>
+              <div class="spc-chips-row">${fp.learn.map(s=>chip(s,'learn')).join('')}</div>
+            </div>
+            <div style="margin-top:14px;display:flex;gap:8px">
+              <button class="btn btn-outline btn-sm" onclick="go('profile','${fp.id}')" style="flex:1">View Mayank's Profile</button>
+              <button class="btn btn-primary btn-sm" onclick="openConnect('${fp.id}')" style="flex:1">Connect with Mayank</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIVE METRICS -->
+  <section class="wrap">
+    <div class="stat-row">
+      <div class="stat-box"><div class="stat-num">${stats.students}+</div><div class="stat-label">Students Ready to Swap</div></div>
+      <div class="stat-box"><div class="stat-num">${stats.skills}</div><div class="stat-label">Skills across 8 Fields</div></div>
+      <div class="stat-box"><div class="stat-num">${stats.swaps}+</div><div class="stat-label">Successful Swaps Made</div></div>
+      <div class="stat-box"><div class="stat-num">₹0</div><div class="stat-label">Cost to Learn Anything</div></div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="section wrap">
+    <div class="sec-head">
+      <h2>How SkillSwap Works</h2>
+      <p>Three effortless steps to level up your skills with peers on campus.</p>
+    </div>
+    <div class="grid3">
+      <div class="feat-card">
+        <div class="feat-icon">🎯</div>
+        <h3>1. List Your Skills</h3>
+        <p>Tell us what you can teach (e.g. C++, Photoshop, Guitar) and what you're hungry to learn this semester.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">⚡</div>
+        <h3>2. Instant Smart Match</h3>
+        <p>Our algorithm pairs you with students who want what you teach and teach what you want — up to 100% mutual matches.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🤝</div>
+        <h3>3. Connect & Learn</h3>
+        <p>Send a request, chat in real-time, jump on a quick Meet session, and exchange ratings once you've finished.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPLORE BY CATEGORY -->
+  <section class="section wrap">
+    <div class="sec-head">
+      <h2>Explore by Category</h2>
+      <p>Click any domain to find students ready to trade skills right now.</p>
+    </div>
+    <div class="catgrid">${Object.keys(CATS).map(c=>`<div class="catcard" onclick="state.explCat='${c}';go('explore')"><div class="em">${c.split(' ')[0]}</div><h4>${c.split(' ').slice(1).join(' ')}</h4></div>`).join('')}</div>
+  </section>
+
+  <!-- COMPARISON TABLE: WHY SKILLSWAP BEATS EXPENSIVE COURSES -->
+  <section class="section wrap">
+    <div class="sec-head">
+      <h2>Why Choose SkillSwap?</h2>
+      <p>Why spend thousands on recorded videos when you can learn 1-on-1 for free?</p>
+    </div>
+    <div class="comparison-wrap">
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th class="highlight">🤝 SkillSwap</th>
+            <th>Paid Online Courses</th>
+            <th>Cold DMs on LinkedIn</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Cost</td>
+            <td class="highlight"><b style="color:var(--emerald)">₹0 (100% Free Forever)</b></td>
+            <td>₹5,000 – ₹50,000+</td>
+            <td>Free, but 90% ignored</td>
+          </tr>
+          <tr>
+            <td>Learning Style</td>
+            <td class="highlight"><span class="comp-check">✓</span> 1-on-1 Live Peer Sessions</td>
+            <td><span class="comp-cross">✗</span> Boring Pre-recorded videos</td>
+            <td><span class="comp-cross">✗</span> Irregular text messages</td>
+          </tr>
+          <tr>
+            <td>Reciprocal Value</td>
+            <td class="highlight"><span class="comp-check">✓</span> Both parties learn & teach</td>
+            <td><span class="comp-cross">✗</span> One-way passive watching</td>
+            <td><span class="comp-cross">✗</span> Unbalanced requests</td>
+          </tr>
+          <tr>
+            <td>Verified College Peers</td>
+            <td class="highlight"><span class="comp-check">✓</span> Genuine campus students</td>
+            <td><span class="comp-cross">✗</span> Random anonymous forums</td>
+            <td><span class="comp-cross">✗</span> Inactive professionals</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- STUDENT TESTIMONIALS -->
+  <section class="section wrap">
+    <div class="sec-head">
+      <h2>What Campus Swappers Say</h2>
+      <p>Real stories from students exchanging skills every day.</p>
+    </div>
+    <div class="grid3">
+      <div class="feat-card">
+        <div style="margin-bottom:10px">${starsHTML(5, 14)}</div>
+        <p style="font-style:italic;color:var(--ink)">"Taught someone C++ for a week, walked away knowing enough Photoshop to revamp my whole developer portfolio."</p>
+        <div style="margin-top:16px;display:flex;align-items:center;gap:10px">
+          ${avatar('Aarav Sharma', 38)}
+          <div><b style="font-size:14px">Aarav Sharma</b><br><span style="color:var(--muted);font-size:12px">B.Tech CSE · DTU</span></div>
+        </div>
+      </div>
+      <div class="feat-card">
+        <div style="margin-bottom:10px">${starsHTML(5, 14)}</div>
+        <p style="font-style:italic;color:var(--ink)">"Way less awkward than cold-messaging seniors. The match algorithm tells you exactly why you're a fit before you even say hi."</p>
+        <div style="margin-top:16px;display:flex;align-items:center;gap:10px">
+          ${avatar('Priya Verma', 38)}
+          <div><b style="font-size:14px">Priya Verma</b><br><span style="color:var(--muted);font-size:12px">UI/UX · Delhi Univ</span></div>
+        </div>
+      </div>
+      <div class="feat-card">
+        <div style="margin-bottom:10px">${starsHTML(5, 14)}</div>
+        <p style="font-style:italic;color:var(--ink)">"Free tutoring, basically — except I taught guitar in exchange, which didn't feel like work at all. Best learning hack ever."</p>
+        <div style="margin-top:16px;display:flex;align-items:center;gap:10px">
+          ${avatar('Rohan Nair', 38)}
+          <div><b style="font-size:14px">Rohan Nair</b><br><span style="color:var(--muted);font-size:12px">Mechanical · SRM</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ ACCORDION -->
+  <section class="section wrap" style="max-width:820px">
+    <div class="sec-head">
+      <h2>Frequently Asked Questions</h2>
+      <p>Everything you need to know about SkillSwap.</p>
+    </div>
+    <div class="faq-box" onclick="toggleFaq(this)">
+      <div class="faq-q"><span>Is SkillSwap really 100% free?</span><span class="faq-toggle">▼</span></div>
+      <div class="faq-a">Yes, absolutely! There are no paid plans, no credits, and no paywalls. The only currency on SkillSwap is knowledge — you teach what you know, and learn what you want.</div>
+    </div>
+    <div class="faq-box" onclick="toggleFaq(this)">
+      <div class="faq-q"><span>What if I'm only a beginner at what I want to teach?</span><span class="faq-toggle">▼</span></div>
+      <div class="faq-a">That's totally fine! SkillSwap matches people based on skill level. Even knowing the basics of Git, Python, or Figma can save a fellow beginner weeks of frustration.</div>
+    </div>
+    <div class="faq-box" onclick="toggleFaq(this)">
+      <div class="faq-q"><span>How do the match percentages work?</span><span class="faq-toggle">▼</span></div>
+      <div class="faq-a">Our matching engine calculates reciprocity: if student A teaches what student B wants to learn, AND student B teaches what student A wants to learn, you get a 100% match!</div>
+    </div>
+    <div class="faq-box" onclick="toggleFaq(this)">
+      <div class="faq-q"><span>How do I conduct sessions with my match?</span><span class="faq-toggle">▼</span></div>
+      <div class="faq-a">Once a match request is accepted, you can chat in real-time right inside SkillSwap and share Google Meet, Zoom, or Discord links to swap skills over live screen-share.</div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta-final wrap">
+    <h2>Ready to swap knowledge on campus?</h2>
+    <p style="color:rgba(255,255,255,0.85);margin-bottom:24px;font-size:16px">Join your fellow students and start learning 1-on-1 today.</p>
+    <button class="btn btn-primary" onclick="go(myProfile?'matches':'onboard')" style="font-size:16px;padding:14px 32px">Find Your Skill Match Now</button>
+  </div>`;
+}
+
+function toggleFaq(el){ el.classList.toggle('open'); }
+
+// Quick search instinct handlers
+function quickOmni(query){
+  state.omniQuery = query;
+  go('omniresults', query);
+}
+function executeOmniSearch(){
+  const val = (document.getElementById('hero-omni')?.value || '').trim();
+  if(!val){ showToast('⚠️ Type a college or skill to search'); return; }
+  state.omniQuery = val;
+  go('omniresults', val);
+}
+
+// ---------- PAGE: OMNI RESULTS (SEARCH INSTINCT) ----------
+async function omniResultsView(){
+  await loadStudents();
+  const q = (state.arg || state.omniQuery || '').toLowerCase().trim();
+  const results = (studentsCache||[]).filter(d=>{
+    const matchName = d.name.toLowerCase().includes(q);
+    const matchCollege = d.college.toLowerCase().includes(q);
+    const matchCourse = d.course.toLowerCase().includes(q);
+    const matchTeach = d.teach.some(t=>t.s.toLowerCase().includes(q));
+    const matchLearn = d.learn.some(s=>s.toLowerCase().includes(q));
+    return matchName || matchCollege || matchCourse || matchTeach || matchLearn;
+  });
+
+  return `<div class="wrap">
+    <div class="page-head">
+      <div class="hero-tagline">⚡ Search Instinct Results</div>
+      <h1>Results for "${escapeHtml(state.arg || state.omniQuery)}"</h1>
+      <p style="color:var(--muted)">Found ${results.length} student${results.length===1?'':'s'} matching your search query.</p>
+    </div>
+
+    <!-- REFINED SEARCH BAR -->
+    <div class="omni-search-wrap" style="margin:20px 0 28px">
+      <div class="omni-icon">🔍</div>
+      <input id="refine-omni" class="omni-input" value="${escapeHtml(state.arg || state.omniQuery)}" placeholder="Refine search: college, skill, or name..." onkeydown="if(event.key==='Enter')go('omniresults', this.value.trim())">
+      <button class="btn btn-primary omni-btn" onclick="go('omniresults', document.getElementById('refine-omni').value.trim())">Search</button>
+    </div>
+
+    ${results.length ? results.map(d=>`
+      <div class="matchcard">
+        <div class="mc-top">
+          ${avatar(d.name, 56, d.profile_picture)}
+          <div>
+            <div class="mc-name">${d.name}</div>
+            <div class="mc-sub">🎓 ${d.course || 'Student'} · 🏛️ ${d.college || 'Campus'}</div>
+          </div>
+        </div>
+        <div class="mc-body">
+          <div class="lbl">Can teach</div>
+          <div>${d.teach.map(t=>chip(t.s)).join('') || '<span style="color:var(--muted);font-size:13px">None listed</span>'}</div>
+          <div class="lbl">Wants to learn</div>
+          <div>${d.learn.map(s=>chip(s,'learn')).join('') || '<span style="color:var(--muted);font-size:13px">None listed</span>'}</div>
+        </div>
+        <div class="mc-actions">
+          <button class="btn btn-outline" onclick="go('profile','${d.id}')">View Profile</button>
+          <button class="btn btn-primary" onclick="openConnect('${d.id}')">Connect</button>
+        </div>
+      </div>
+    `).join('') : `
+      <div class="pbox" style="text-align:center;padding:50px 20px">
+        <div style="font-size:48px">🔍</div>
+        <h3 style="margin-top:12px">No direct matches for "${escapeHtml(state.arg || state.omniQuery)}"</h3>
+        <p style="color:var(--muted);max-width:400px;margin:8px auto 20px">Try searching by broad terms like 'Python', 'Web Development', 'Design', or university name.</p>
+        <button class="btn btn-primary" onclick="go('explore')">Explore All Skills</button>
+      </div>
+    `}
+  </div>`;
+}
+
+function escapeHtml(str){ return (str||'').replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+// ---------- PAGE: ONBOARDING / AUTH ----------
+async function onboardView(){
+  const o=state.onboard;
+  if(!session || o.step===0){
+    return `<div class="wrap"><div class="onboard">
+      <h2>${o.authMode==='signup'?'Create your SkillSwap account':'Welcome back to SkillSwap'}</h2>
+      <p style="color:var(--muted);font-size:14.5px;margin-top:6px">Join campus learners exchanging skills 100% free.</p>
+      <div class="field" style="margin-top:20px"><label>Email address</label><input id="auth-email" type="email" placeholder="you@college.edu"></div>
+      <div class="field"><label>Password</label><input id="auth-password" type="password" placeholder="At least 6 characters"></div>
+      <button class="btn btn-primary" style="width:100%;margin-top:8px" onclick="authSubmit()">${o.authMode==='signup'?'Sign Up':'Log In'}</button>
+      <p style="text-align:center;margin-top:16px;font-size:14px;color:var(--muted)">
+        ${o.authMode==='signup'?"Already have an account? ":"New to SkillSwap? "}
+        <a style="color:var(--coral-dark);font-weight:700;cursor:pointer" onclick="state.onboard.authMode=state.onboard.authMode==='signup'?'login':'signup';render()">${o.authMode==='signup'?'Log in':'Sign up'}</a>
+      </p>
+    </div></div>`;
+  }
+  await loadSkillsCache();
+  const step=o.step;
+  let body='';
+  if(step===1){
+    body=`<h2>Tell us about yourself</h2>
+    <div class="field"><label>Your Full Name</label><input id="ob-name" value="${o.name}" placeholder="e.g. Mayank Choubey"></div>
+    <div class="field"><label>College / University</label><input id="ob-college" value="${o.college}" placeholder="e.g. Delhi Technological University"></div>
+    <div class="field"><label>Course / Major</label><input id="ob-course" value="${o.course}" placeholder="e.g. B.Tech Computer Science"></div>
+    <div class="field"><label>Year</label><select id="ob-year">${['1st Year','2nd Year','3rd Year','4th Year','Postgrad','Alumni'].map(y=>`<option ${o.year===y?'selected':''}>${y}</option>`).join('')}</select></div>
+    <div class="field"><label>Short Bio</label><textarea id="ob-bio" placeholder="Tell other swappers what you're interested in...">${o.bio}</textarea></div>`;
+  } else if(step===2 || step===3){
+    const key = step===2?'teach':'learn';
+    body=`<h2>${step===2?'What skills can you teach?':'What skills do you want to learn?'}</h2>
+    <p style="color:var(--muted);font-size:14.5px;margin-top:6px">Tap to select all that apply.</p>
+    <div class="skillgrid">${skillsCache.map(sk=>`<span class="chip select ${o[key].includes(sk.name)?'selected':''}" onclick="toggleSkill('${key}','${sk.name.replace(/'/g,"\\'")}')">${sk.name}</span>`).join('')}</div>`;
+  } else if(step===4){
+    body=`<h2>What is your teaching skill level?</h2><p style="color:var(--muted);font-size:14.5px;margin-top:6px">Helps match you with learners at the right stage.</p>
+    ${o.teach.map(s=>`<div class="levelrow"><span><b>${s}</b></span><select onchange="state.onboard.levels['${s.replace(/'/g,"\\'")}']=this.value">${['Beginner','Intermediate','Advanced'].map(l=>`<option ${((o.levels[s]||'Intermediate')===l)?'selected':''}>${l}</option>`).join('')}</select></div>`).join('') || '<p style="color:var(--muted)">Go back and select teaching skills first.</p>'}`;
+  } else if(step===5){
+    body=`<h2>Review your profile</h2>
+    <div style="margin-top:16px;padding:22px;background:var(--paper);border:1.5px solid var(--line);border-radius:18px">
+      <div style="display:flex;gap:14px;align-items:center">
+        ${avatar(o.name||'You',56)}
+        <div><b style="font-size:18px">${o.name||'Your Name'}</b><br><span style="color:var(--muted);font-size:13.5px">${o.course} · ${o.college}</span></div>
+      </div>
+      <p style="margin-top:12px;color:var(--muted);font-size:14.5px">${o.bio || 'Ready to swap skills!'}</p>
+      <div style="margin-top:14px"><b style="font-size:12.5px;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em">Can teach</b><br>${o.teach.map(s=>chip(s)).join('')}</div>
+      <div style="margin-top:10px"><b style="font-size:12.5px;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em">Wants to learn</b><br>${o.learn.map(s=>chip(s,'learn')).join('')}</div>
+    </div>`;
+  }
+  return `<div class="wrap"><div class="onboard">
+    <div class="progress">${[1,2,3,4,5].map(i=>`<div class="${i<=step?'done':''}"></div>`).join('')}</div>
+    ${body}
+    <div class="onboard-nav">
+      ${step>1?`<button class="btn btn-outline" onclick="obNav(-1)">Back</button>`:'<span></span>'}
+      ${step<5?`<button class="btn btn-primary" onclick="obNav(1)">Continue</button>`:`<button class="btn btn-primary" onclick="createProfile()">Create My Profile</button>`}
+    </div>
+  </div></div>`;
+}
+
+async function authSubmit(){
+  const email=document.getElementById('auth-email').value.trim();
+  const password=document.getElementById('auth-password').value;
+  if(!email||!password){ showToast('⚠️ Enter an email and password'); return; }
+  let res;
+  if(state.onboard.authMode==='signup') res = await supa.auth.signUp({email,password});
+  else res = await supa.auth.signInWithPassword({email,password});
+  if(res.error){ showToast('⚠️ '+res.error.message); return; }
+  if(!res.data.session){ showToast('✅ Check your email to confirm, then log in.'); state.onboard.authMode='login'; render(); return; }
+  session = res.data.session;
+  await loadMyProfile();
+  updateAuthNav(); updateBadges();
+  if(myProfile) go('dashboard'); else { state.onboard.step=1; render(); }
+}
+function toggleSkill(key,s){ const o=state.onboard; const i=o[key].indexOf(s); if(i>-1)o[key].splice(i,1); else o[key].push(s); render(); }
+function obNav(dir){
+  const o=state.onboard;
+  if(dir===1 && o.step===1){
+    o.name=document.getElementById('ob-name').value||'You';
+    o.college=document.getElementById('ob-college').value;
+    o.course=document.getElementById('ob-course').value;
+    o.year=document.getElementById('ob-year').value;
+    o.bio=document.getElementById('ob-bio').value;
+  }
+  o.step+=dir; render();
+}
+async function createProfile(){
+  const o=state.onboard;
+  const { error:pErr } = await supa.from('profiles').insert({ id:session.user.id, name:o.name||'You', college:o.college, course:o.course, year:o.year, bio:o.bio });
+  if(pErr){ showToast('⚠️ '+pErr.message); return; }
+  const byName={}; skillsCache.forEach(sk=>byName[sk.name]=sk.id);
+  const rows=[];
+  o.teach.forEach(s=>{ if(byName[s]) rows.push({user_id:session.user.id, skill_id:byName[s], type:'teach', level:(o.levels[s]||'Intermediate').toLowerCase()}); });
+  o.learn.forEach(s=>{ if(byName[s]) rows.push({user_id:session.user.id, skill_id:byName[s], type:'learn'}); });
+  if(rows.length){ const { error:sErr } = await supa.from('user_skills').insert(rows); if(sErr){ showToast('⚠️ '+sErr.message); } }
+  await loadMyProfile();
+  studentsCache=null;
+  go('dashboard');
+}
+
+function matchCardHTML(m){
+  const d=m.d;
+  return `<div class="matchcard">
+    <div class="mc-top">
+      ${avatar(d.name,52,d.profile_picture)}
+      <div>
+        <div class="mc-name">${d.name}</div>
+        <div class="mc-sub">🎓 ${d.course||'Student'} · 🏛️ ${d.college||'Campus'}</div>
+      </div>
+      <div class="mc-pct ${m.pct===100?'pct-100':''}">
+        <div class="ring-wrap">${ringHTML(m.pct)}<div class="ring-num">${m.pct}%</div></div>
+        ${m.pct===100?confettiHTML():''}
+        <div class="pct-label">Mutual Match</div>
+      </div>
+    </div>
+    <div class="mc-body">
+      <div class="lbl">Can teach</div>
+      <div>${d.teach.map(t=>chip(t.s)).join('')||'<span style="color:var(--muted);font-size:13px">None listed</span>'}</div>
+      <div class="lbl">Wants to learn</div>
+      <div>${d.learn.map(s=>chip(s,'learn')).join('')||'<span style="color:var(--muted);font-size:13px">None listed</span>'}</div>
+      <div class="mc-why">${m.reasons.join(' ')||'Some overlapping interests to explore.'}</div>
+    </div>
+    <div class="mc-actions">
+      <button class="btn btn-outline" onclick="go('profile','${d.id}')">View Profile</button>
+      <button class="btn btn-primary" onclick="openConnect('${d.id}')">Send Request</button>
+    </div>
+  </div>`;
+}
+
+// ---------- PAGE: DASHBOARD ----------
+async function dashboard(){
+  if(!myProfile) return onboardView();
+  const matches = (await getMatches()).slice(0,6);
+  return `<div class="wrap">
+  <div class="page-head">
+    <div class="hero-tagline">✨ Student Dashboard</div>
+    <h1>Welcome back, ${myProfile.name.split(' ')[0]} 👋</h1>
+    <p style="color:var(--muted)">Here are your latest reciprocal matches and community updates.</p>
+  </div>
+  <div class="summary" style="display:flex;gap:18px;flex-wrap:wrap;margin:20px 0 34px">
+    <div class="summarybox" style="flex:1;min-width:240px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px">
+      <h4 style="color:var(--muted);font-size:12.5px;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px">Skills You Teach</h4>
+      ${myProfile.teach.map(t=>chip(t.s)).join('')||'<span style="color:var(--muted)">None listed yet</span>'}
+    </div>
+    <div class="summarybox" style="flex:1;min-width:240px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px">
+      <h4 style="color:var(--muted);font-size:12.5px;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px">Skills You Want to Learn</h4>
+      ${myProfile.learn.map(s=>chip(s,'learn')).join('')||'<span style="color:var(--muted)">None listed yet</span>'}
+    </div>
+  </div>
+  <h2 style="font-size:24px;margin-bottom:16px">🔥 Your Top Skill Matches</h2>
+  ${matches.length? matches.map(matchCardHTML).join('') : '<div class="pbox" style="text-align:center;padding:48px 24px;background:var(--card);border:1px solid var(--line);border-radius:20px"><div style="font-size:42px">🌱</div><h3 style="margin-top:10px">No matches just yet</h3><p style="color:var(--muted);font-size:14.5px;margin-top:6px;max-width:340px;margin-left:auto;margin-right:auto">Add a couple more skills you can teach or learn — the more you list, the higher your match rates!</p><button class="btn btn-primary" style="margin-top:16px" onclick="go(\'settings\')">Update My Skills</button></div>'}
+  </div>`;
+}
+
+// ---------- PAGE: MATCHES ----------
+async function matchesPage(){
+  if(!myProfile) return onboardView();
+  let matches = await getMatches();
+  if(state.matchFilter==='recent') matches=[...matches].reverse();
+  if(state.matchFilter==='skill') matches=[...matches].sort((a,b)=>a.d.name.localeCompare(b.d.name));
+  return `<div class="wrap">
+  <div class="page-head">
+    <div class="hero-tagline">🔥 Smart Matches</div>
+    <h1>My Skill Matches</h1>
+    <p style="color:var(--muted)">All campus peers who match your teaching and learning goals.</p>
+  </div>
+  <div class="filters">
+    <select onchange="state.matchFilter=this.value;render()">
+      <option value="pct" ${state.matchFilter==='pct'?'selected':''}>Highest Match %</option>
+      <option value="recent" ${state.matchFilter==='recent'?'selected':''}>Recently Joined</option>
+      <option value="skill" ${state.matchFilter==='skill'?'selected':''}>Name (A-Z)</option>
+    </select>
+  </div>
+  ${matches.length ? matches.map(matchCardHTML).join('') : '<div class="pbox" style="text-align:center;padding:48px 24px;background:var(--card);border:1px solid var(--line);border-radius:20px"><div style="font-size:42px">🔍</div><h3 style="margin-top:10px">No active matches found</h3><p style="color:var(--muted);font-size:14.5px;margin-top:6px">Explore the skill directory or add more skills to your profile.</p></div>'}
+  </div>`;
+}
+
+// ---------- PAGE: EXPLORE ----------
+async function exploreView(){
+  await loadStudents();
+  const cat=state.explCat, skills=cat?CATS[cat]:null;
+  return `<div class="wrap">
+  <div class="page-head">
+    <div class="hero-tagline">🔍 Skill Directory</div>
+    <h1>Explore Skills</h1>
+    <p style="color:var(--muted)">Find fellow students across engineering, design, media, and more.</p>
+  </div>
+  <div class="searchbar">
+    <input id="explore-search" placeholder="Search by skill name (e.g. React, C++, Figma)..." onkeydown="if(event.key==='Enter')exploreSearch()">
+    <button class="btn btn-primary" onclick="exploreSearch()">Search</button>
+  </div>
+  <div class="catgrid">${Object.keys(CATS).map(c=>`<div class="catcard ${cat===c?'active':''}" onclick="state.explCat='${c}';render()"><div class="em">${c.split(' ')[0]}</div><h4>${c.split(' ').slice(1).join(' ')}</h4></div>`).join('')}</div>
+  ${skills?`<h3 style="margin-bottom:14px">${cat.split(' ').slice(1).join(' ')}</h3><div class="skilllist">${skills.map(s=>`<div class="skillpill" onclick="go('skillresults','${s}')"><b>${s}</b><span>${(studentsCache||[]).filter(d=>d.teach.some(t=>t.s===s)).length} students teach this</span></div>`).join('')}</div>`:''}
+  </div>`;
+}
+function exploreSearch(){ const v=document.getElementById('explore-search').value.trim(); if(v) go('skillresults', v); }
+
+async function skillResults(){
+  await loadStudents();
+  const skill=state.arg;
+  const students = (studentsCache||[]).filter(d=>d.teach.some(t=>t.s.toLowerCase()===skill.toLowerCase()) || d.name.toLowerCase().includes(skill.toLowerCase()));
+  return `<div class="wrap">
+  <div class="page-head"><h1>Students who can teach ${skill}</h1></div>
+  ${students.map(d=>`<div class="matchcard"><div class="mc-top">${avatar(d.name,52,d.profile_picture)}<div><div class="mc-name">${d.name}</div><div class="mc-sub">🎓 ${d.course||'Student'} · 🏛️ ${d.college||'Campus'}</div></div></div>
+    <div class="mc-body"><div class="lbl">Can teach</div>${d.teach.map(t=>chip(t.s)).join('')}<div class="lbl">Wants to learn</div>${d.learn.map(s=>chip(s,'learn')).join('')}</div>
+    <div class="mc-actions"><button class="btn btn-outline" onclick="go('profile','${d.id}')">View Profile</button><button class="btn btn-primary" onclick="openConnect('${d.id}')">Connect</button></div></div>`).join('') || '<p style="color:var(--muted)">No students found for that skill yet.</p>'}
+  </div>`;
+}
+
+// ---------- PAGE: PROFILE ----------
+async function profileView(){
+  const id=state.arg;
+  await loadStudents();
+  let d = (studentsCache||[]).find(x=>x.id===id);
+  if(!d && founderProfile && (id===founderProfile.id || id==='founder')) d = founderProfile;
+  if(!d) return `<div class="wrap"><p>Profile not found.</p></div>`;
+  const m = myProfile ? matchPct(myProfile,d) : null;
+  const { data:revData } = await supa.from('ratings').select('stars,feedback,reviewer:profiles!ratings_reviewer_id_fkey(name)').eq('rated_user_id',id);
+  const revs = revData||[];
+  const avg = revs.length? revs.reduce((a,b)=>a+b.stars,0)/revs.length : null;
+
+  return `<div class="wrap">
+  <div class="page-head"><div class="profilehead">
+    ${avatar(d.name,84,d.profile_picture)}
+    <div>
+      ${d.name.toLowerCase().includes('mayank') ? '<span class="spc-founder-badge" style="display:inline-block;margin-bottom:6px">⚡ Creator & Founder</span>' : ''}
+      <h1>${d.name}</h1>
+      <p style="color:var(--muted)">🎓 ${d.course||'—'} · 🏛️ ${d.college||'—'}</p>
+      ${avg?`<p style="margin-top:6px">${starsHTML(avg,15)} <b style="font-size:14px">${avg.toFixed(1)}</b> <span style="color:var(--muted);font-size:13px">(${revs.length} swap review${revs.length>1?'s':''})</span></p>`:`<p style="color:var(--muted);font-size:13px;margin-top:6px">No ratings yet</p>`}
+    </div>
+    ${m?`<div class="mc-pct" style="margin-left:auto"><div class="pct-num" style="font-size:32px">${m.pct}%</div><div class="pct-label">Mutual Match</div></div>`:''}
+  </div></div>
+  <div class="pgrid">
+    <div>
+      <div class="pbox"><h3>About</h3><p style="color:var(--muted)">${d.bio||'No bio added yet.'}</p></div>
+      <div class="pbox"><h3>I Can Teach</h3>${d.teach.map(t=>chip(t.s)).join('')||'<span style="color:var(--muted)">None listed</span>'}</div>
+      <div class="pbox"><h3>I Want To Learn</h3>${d.learn.map(s=>chip(s,'learn')).join('')||'<span style="color:var(--muted)">None listed</span>'}</div>
+      <div class="pbox">
+        <h3>Ratings & Student Reviews</h3>
+        ${revs.length? revs.map(r=>`<div style="padding:12px 0;border-top:1px solid var(--line)"><div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:14px">${r.reviewer?.name||'Student'}</b>${starsHTML(r.stars,13)}</div><p style="color:var(--muted);font-size:13.5px;margin-top:4px">${r.feedback}</p></div>`).join('') : `<p style="color:var(--muted);font-size:14px">No feedback yet — be the first to swap and leave a review.</p>`}
+        ${myProfile && myProfile.id!==d.id ? `<div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--line)">
+          <div class="lbl" style="font-size:13px;color:var(--muted);font-weight:700;margin-bottom:6px">Studied with ${d.name.split(' ')[0]}? Rate your session</div>
+          <div style="margin:4px 0 10px">${[1,2,3,4,5].map(n=>`<span onclick="draftStars=${n};render()" style="cursor:pointer;font-size:24px;color:${n<=draftStars?'var(--amber)':'#d8d2c2'}">★</span>`).join('')}</div>
+          <textarea id="rate-text" placeholder="Share how the skill swap session went..."></textarea>
+          <button class="btn btn-primary" style="margin-top:10px" onclick="submitRating('${d.id}')">Submit Feedback</button>
+        </div>`:''}
+      </div>
+    </div>
+    <div>
+      <div class="pbox"><h3>Skill Competency Levels</h3>${d.teach.map(t=>`<div class="levelbar"><span>${t.s}</span><span class="tag-lvl">${t.l}</span></div>`).join('')||'<span style="color:var(--muted)">None listed</span>'}</div>
+      ${m?`<div class="pbox"><h3>Why You Match</h3><p style="color:#5a5044;font-size:14px;line-height:1.5">${m.reasons.join(' ')||'Some complementary interests to explore.'}</p></div>`:''}
+      <button class="btn btn-primary" style="width:100%;padding:14px" onclick="openConnect('${d.id}')">Request SkillSwap</button>
+    </div>
+  </div></div>`;
+}
+
+async function submitRating(id){
+  const text=(document.getElementById('rate-text')?.value||'').trim();
+  if(!text){ showToast('⚠️ Write a short note first'); return; }
+  const { error } = await supa.from('ratings').insert({ rated_user_id:id, reviewer_id:myProfile.id, stars:draftStars, feedback:text });
+  if(error){ showToast('⚠️ '+error.message); return; }
+  draftStars=5; showToast('✅ Feedback submitted!'); render();
+}
+
+async function openConnect(id){
+  if(!myProfile){ go('onboard'); return; }
+  await loadStudents();
+  let t = (studentsCache||[]).find(d=>d.id===id);
+  if(!t && founderProfile && (id===founderProfile.id || id==='founder')) t = founderProfile;
+  connectTarget = t;
+  render();
+}
+
+function connectModal(){
+  if(!connectTarget) return '';
+  const d=connectTarget;
+  const myTeach = myProfile?.teach.map(t=>t.s).find(s=>d.learn.includes(s)) || myProfile?.teach[0]?.s || 'Web Development';
+  const myLearn = myProfile?.learn.find(s=>d.teach.some(t=>t.s===s)) || myProfile?.learn[0] || 'UI/UX Design';
+  const firstName=d.name.split(' ')[0];
+
+  return `<div class="overlay" onclick="if(event.target===this){connectTarget=null;render();}"><div class="modal">
+    <h2>🤝 Send SkillSwap Request</h2>
+    <p style="color:var(--muted);font-size:13.5px;margin-bottom:14px">Propose a reciprocal swap session with ${firstName}.</p>
+    <div class="modal-row"><span>You can teach</span><b>${myTeach}</b></div>
+    <div class="modal-row"><span>You want to learn</span><b>${myLearn}</b></div>
+    <div class="modal-row"><span>They can teach</span><b>${d.teach.map(t=>t.s).join(', ')||'—'}</b></div>
+    <div class="modal-row"><span>They want to learn</span><b>${d.learn.join(', ')||'—'}</b></div>
+    <textarea id="connect-msg">Hi ${firstName}! I'd love to learn ${myLearn} from you, and in exchange I can teach you ${myTeach}. Would you like to do a SkillSwap?</textarea>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="connectTarget=null;render()" style="flex:1">Cancel</button>
+      <button class="btn btn-primary" onclick="sendRequest('${d.id}')" style="flex:1">Send Request</button>
+    </div></div></div>`;
+}
+
+async function sendRequest(id){
+  const text=(document.getElementById('connect-msg')?.value||'').trim();
+  const { error } = await supa.from('connections').insert({ sender_id:myProfile.id, receiver_id:id, message:text, status:'pending' });
+  connectTarget=null;
+  if(error){ showToast('⚠️ '+error.message); render(); return; }
+  showToast("✅ SkillSwap request sent!"); updateBadges(); render();
+}
+
+function otherId(c){ return c.sender_id===myProfile.id? c.receiver_id : c.sender_id; }
+function otherName(c){ return c.sender_id===myProfile.id? (c.receiver?.name||'Student') : (c.sender?.name||'Student'); }
+
+async function loadConnections(){
+  const { data } = await supa.from('connections')
+    .select('id,sender_id,receiver_id,status,message,created_at,sender:profiles!connections_sender_id_fkey(name,profile_picture),receiver:profiles!connections_receiver_id_fkey(name,profile_picture)')
+    .or(`sender_id.eq.${myProfile.id},receiver_id.eq.${myProfile.id}`);
+  connectionsCache = data||[]; return connectionsCache;
+}
+
+// ---------- PAGE: INCOMING REQUESTS ----------
+async function requestsView(){
+  if(!myProfile) return onboardView();
+  await loadConnections();
+  const pendingReceived = connectionsCache.filter(c=>c.status==='pending' && c.receiver_id===myProfile.id);
+  const sentRequests = connectionsCache.filter(c=>c.sender_id===myProfile.id);
+
+  return `<div class="wrap">
+  <div class="page-head">
+    <div class="hero-tagline">🤝 Connection Requests</div>
+    <h1>Incoming & Sent Requests</h1>
+    <p style="color:var(--muted)">Manage your reciprocal swap proposals.</p>
+  </div>
+
+  <div class="pbox" style="margin-bottom:24px">
+    <h3>Incoming Requests (${pendingReceived.length})</h3>
+    ${pendingReceived.length ? pendingReceived.map(c=>`
+      <div class="levelbar" style="padding:14px 0;align-items:center">
+        <div>
+          <b>${c.sender.name}</b> wants to SkillSwap with you
+          <p style="color:var(--muted);font-size:13.5px;margin-top:3px">${c.message ? `"${c.message}"` : 'Sent a swap request'}</p>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-outline btn-sm" onclick="rejectConnection('${c.id}')">Decline</button>
+          <button class="btn btn-primary btn-sm" onclick="acceptConnection('${c.id}')">Accept Swap</button>
+        </div>
+      </div>
+    `).join('') : `<p style="color:var(--muted);font-size:14px;padding:12px 0">No pending incoming requests right now.</p>`}
+  </div>
+
+  <div class="pbox">
+    <h3>Sent Proposals (${sentRequests.length})</h3>
+    ${sentRequests.length ? sentRequests.map(c=>`
+      <div class="levelbar" style="padding:12px 0">
+        <div>
+          Sent to <b>${c.receiver?.name || 'Student'}</b>
+          <p style="color:var(--muted);font-size:13px;margin-top:2px">Status: <span style="font-weight:700;color:${c.status==='accepted'?'var(--emerald)':c.status==='rejected'?'#dc2626':'var(--amber)'}">${cap(c.status)}</span></p>
+        </div>
+        ${c.status==='accepted' ? `<button class="btn btn-primary btn-sm" onclick="go('messages','${c.receiver_id}')">Open Chat</button>` : ''}
+      </div>
+    `).join('') : `<p style="color:var(--muted);font-size:14px;padding:12px 0">You haven't sent any requests yet.</p>`}
+  </div>
+  </div>`;
+}
+
+async function acceptConnection(id){
+  await supa.from('connections').update({status:'accepted'}).eq('id',id);
+  showToast('🎉 Request accepted! You can now chat.');
+  updateBadges(); render();
+}
+async function rejectConnection(id){
+  await supa.from('connections').update({status:'rejected'}).eq('id',id);
+  showToast('Request declined.');
+  updateBadges(); render();
+}
+
+// ---------- PAGE: MESSAGES ----------
+async function messagesView(){
+  if(!myProfile) return onboardView();
+  await loadConnections();
+  const accepted = connectionsCache.filter(c=>c.status==='accepted');
+  const activeId = state.arg || (accepted[0] ? otherId(accepted[0]) : null);
+  const activeConn = accepted.find(c=>otherId(c)===activeId);
+  let msgs=[];
+
+  if(activeId && activeConn){
+    const { data } = await supa.from('messages')
+      .select('*')
+      .or(`and(sender_id.eq.${myProfile.id},receiver_id.eq.${activeId}),and(sender_id.eq.${activeId},receiver_id.eq.${myProfile.id})`)
+      .order('created_at');
+    msgs = data||[];
+    markConversationRead(activeId);
+    subscribeMessages(activeId);
+  } else { unsubscribeMessages(); }
+
+  return `<div class="wrap">
+  <div class="page-head">
+    <div class="hero-tagline">💬 Real-Time Chat</div>
+    <h1>Messages</h1>
+  </div>
+  <div class="msgwrap">
+    <div class="convlist">
+      ${accepted.length? accepted.map(c=>{
+        const oid=otherId(c);
+        return `<div class="convitem ${oid===activeId?'active':''}" onclick="go('messages','${oid}')">
+          ${avatar(otherName(c),40,c.sender_id===myProfile.id?c.receiver?.profile_picture:c.sender?.profile_picture)}
+          <div>
+            <div class="cname">${otherName(c)}</div>
+            <div class="clast">Active swap match</div>
+          </div>
+        </div>`;
+      }).join('') : '<p style="padding:24px 18px;color:var(--muted);font-size:14px">Connect with a peer and once accepted, your conversations will show up here.</p>'}
+    </div>
+    <div class="chatpane">
+      ${activeId&&activeConn?`
+        <div class="chathead">
+          ${avatar(otherName(activeConn),34)}
+          <div>
+            <div style="font-weight:700">${otherName(activeConn)}</div>
+            <div style="font-size:12px;color:var(--emerald);font-weight:600">● Connected peer</div>
+          </div>
+        </div>
+        <div class="chatbody" id="chatbody">
+          ${msgs.map(m=>`<div class="bubble ${m.sender_id===myProfile.id?'me':'them'}">${escapeHtml(m.message)}</div>`).join('')}
+        </div>
+        <div class="chatinput">
+          <input id="chat-input" placeholder="Type a message or share a Google Meet link..." onkeydown="if(event.key==='Enter')sendChat('${activeId}')">
+          <button class="btn btn-primary" onclick="sendChat('${activeId}')">Send</button>
+        </div>
+      ` : '<div style="padding:60px 20px;text-align:center;color:var(--muted)">Select a conversation to start messaging.</div>'}
+    </div>
+  </div></div>`;
+}
+
+async function sendChat(id){
+  const inp=document.getElementById('chat-input'); const v=inp.value.trim(); if(!v) return;
+  inp.value='';
+  appendBubble(v, 'me');
+  const { error } = await supa.from('messages').insert({ sender_id:myProfile.id, receiver_id:id, message:v });
+  if(error){ showToast('⚠️ '+error.message); }
+}
+
+// ---------- PAGE: PROFILE & SETTINGS (WITH 100% FREE STORAGE COMPRESSION) ----------
+async function settingsView(){
+  if(!myProfile) return onboardView();
+  await loadSkillsCache();
+  const me=myProfile;
+  return `<div class="wrap">
+  <div class="page-head">
+    <div class="hero-tagline">👤 Profile & Storage Settings</div>
+    <h1>Edit Profile</h1>
+    <p style="color:var(--muted)">Any updates here immediately sync to the homepage spotlight and match results.</p>
+  </div>
+
+  <div class="pbox">
+    <!-- FREE STORAGE ADVICE BANNER -->
+    <div class="storage-tip-box">
+      <b>💡 100% Free Database & Storage Forever:</b>
+      Our built-in image optimizer automatically compresses your photos to 15KB WebP before upload.
+      This allows <b>40,000+ profile pictures</b> to fit inside Supabase's free 1GB limit with zero cost!
+    </div>
+
+    <div style="display:flex;align-items:center;gap:18px;margin-bottom:22px">
+      ${avatar(me.name,78,me.profile_picture)}
+      <div>
+        <div class="lbl" style="font-size:13px;color:var(--muted);font-weight:700;margin-bottom:6px">Profile Picture</div>
+        <input type="file" id="avatar-file" accept="image/*" style="display:none" onchange="uploadAvatarOptimized()">
+        <button class="btn btn-outline" style="padding:8px 16px;font-size:13.5px" onclick="document.getElementById('avatar-file').click()">Upload Photo (Auto-Compressed)</button>
+        <span style="font-size:12px;color:var(--muted);margin-left:8px">or paste image URL below</span>
+      </div>
+    </div>
+
+    <div class="field"><label>Or Direct Image URL (Uses 0 KB Storage)</label><input id="s-pic-url" value="${me.profile_picture||''}" placeholder="https://your-image-url.com/photo.jpg"></div>
+    <div class="field"><label>Full Name</label><input id="s-name" value="${me.name}"></div>
+    <div class="field"><label>College / University</label><input id="s-college" value="${me.college}"></div>
+    <div class="field"><label>Course / Major</label><input id="s-course" value="${me.course}"></div>
+    <div class="field"><label>Short Bio</label><textarea id="s-bio">${me.bio}</textarea></div>
+
+    <div class="lbl" style="font-size:13px;color:var(--muted);font-weight:700;margin:16px 0 6px">Skills You Teach</div>
+    <div class="skillgrid">${skillsCache.map(sk=>`<span class="chip select ${me.teach.some(t=>t.s===sk.name)?'selected':''}" onclick="settingsToggle('teach','${sk.name.replace(/'/g,"\\'")}')">${sk.name}</span>`).join('')}</div>
+
+    <div class="lbl" style="font-size:13px;color:var(--muted);font-weight:700;margin:18px 0 6px">Skills You Want to Learn</div>
+    <div class="skillgrid">${skillsCache.map(sk=>`<span class="chip select ${me.learn.includes(sk.name)?'selected':''}" onclick="settingsToggle('learn','${sk.name.replace(/'/g,"\\'")}')">${sk.name}</span>`).join('')}</div>
+
+    <button class="btn btn-primary" style="margin-top:26px;padding:12px 28px" onclick="saveSettings()">Save & Update Homepage</button>
+  </div></div>`;
+}
+
+async function settingsToggle(key,s){
+  await loadSkillsCache();
+  const skillId = skillsCache.find(sk=>sk.name===s)?.id;
+  if(!skillId) return;
+  const has = key==='learn' ? myProfile.learn.includes(s) : myProfile.teach.some(t=>t.s===s);
+  if(has){
+    await supa.from('user_skills').delete().eq('user_id',myProfile.id).eq('skill_id',skillId).eq('type',key);
+  } else {
+    await supa.from('user_skills').insert({ user_id:myProfile.id, skill_id:skillId, type:key, level: key==='teach'?'intermediate':null });
+  }
+  await loadMyProfile();
+  if(myProfile.name.toLowerCase().includes('mayank')) founderProfile = myProfile;
+  studentsCache=null; render();
+}
+
+async function uploadAvatarOptimized(){
+  const file = document.getElementById('avatar-file').files[0];
+  if(!file) return;
+  showToast('Optimizing & compressing photo…');
+  try{
+    // Compress to 15KB WebP!
+    const compressedBlob = await compressAvatar(file, 240, 240, 0.82);
+    const path = `${myProfile.id}/avatar.webp`;
+    const { error:upErr } = await supa.storage.from('avatars').upload(path, compressedBlob, { upsert:true, contentType:'image/webp', cacheControl:'3600' });
+    if(upErr){ showToast('⚠️ '+upErr.message); return; }
+    const { data:pub } = supa.storage.from('avatars').getPublicUrl(path);
+    const url = pub.publicUrl + '?t=' + Date.now();
+    const { error:dbErr } = await supa.from('profiles').update({ profile_picture:url }).eq('id',myProfile.id);
+    if(dbErr){ showToast('⚠️ '+dbErr.message); return; }
+    await loadMyProfile();
+    if(myProfile.name.toLowerCase().includes('mayank')) founderProfile = myProfile;
+    studentsCache=null;
+    showToast('✅ Photo compressed to ~15KB & updated!'); render();
+  }catch(e){ showToast('⚠️ Upload error: '+e.message); }
+}
+
+async function saveSettings(){
+  const name=document.getElementById('s-name').value.trim();
+  const college=document.getElementById('s-college').value.trim();
+  const course=document.getElementById('s-course').value.trim();
+  const bio=document.getElementById('s-bio').value.trim();
+  const picUrl=(document.getElementById('s-pic-url')?.value||'').trim();
+
+  const updatePayload = { name, college, course, bio };
+  if(picUrl) updatePayload.profile_picture = picUrl;
+
+  const { error } = await supa.from('profiles').update(updatePayload).eq('id',myProfile.id);
+  if(error){ showToast('⚠️ '+error.message); return; }
+  await loadMyProfile();
+  if(myProfile.name.toLowerCase().includes('mayank')) founderProfile = myProfile;
+  studentsCache=null;
+  showToast("✅ Profile saved! Changes live on homepage."); render();
+}
+
+// ---------- MAIN RENDER ENGINE ----------
+async function render(){
+  // Update active state in navlinks
+  ['landing','explore','matches','requests','messages','settings'].forEach(v=>{
+    const dEl = document.getElementById('nav-'+v);
+    const mEl = document.getElementById('mob-'+v);
+    if(dEl){ if(state.view===v) dEl.classList.add('active'); else dEl.classList.remove('active'); }
+    if(mEl){ if(state.view===v) mEl.classList.add('active'); else mEl.classList.remove('active'); }
+  });
+
+  const skeletonViews=['dashboard','matches','explore','skillresults','omniresults'];
+  document.getElementById('app').innerHTML = skeletonViews.includes(state.view)
+    ? `<div class="wrap" style="padding-top:24px">${skeletonCards(3)}</div>`
+    : `<div class="wrap" style="padding:80px 0;text-align:center;color:var(--muted)">Loading SkillSwap…</div>`;
+
+  let html='';
+  try{
+    switch(state.view){
+      case 'landing': html = await landing(); break;
+      case 'onboard': html = await onboardView(); break;
+      case 'dashboard': html = await dashboard(); break;
+      case 'matches': html = await matchesPage(); break;
+      case 'explore': html = await exploreView(); break;
+      case 'skillresults': html = await skillResults(); break;
+      case 'omniresults': html = await omniResultsView(); break;
+      case 'requests': html = await requestsView(); break;
+      case 'profile': html = await profileView(); break;
+      case 'messages': html = await messagesView(); break;
+      case 'settings': html = await settingsView(); break;
+      default: html = await landing();
+    }
+  }catch(e){
+    html = `<div class="wrap" style="padding:40px 0"><p style="color:var(--coral-dark)">Notice: ${e.message}</p></div>`;
+  }
+  if(state.view!=='landing'){ html = `<div class="wrap" style="padding-top:16px"><button class="btn-back" onclick="goBack()">← Back</button></div>` + html; }
+  html += connectModal();
+  document.getElementById('app').innerHTML = html;
+}
+
+restoreTheme();
+initAuth();
+</script>
+</body>
+</html>
